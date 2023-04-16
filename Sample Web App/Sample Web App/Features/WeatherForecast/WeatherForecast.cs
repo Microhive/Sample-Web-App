@@ -1,4 +1,4 @@
-namespace Sample_Web_App;
+namespace Sample_Web_App.Features.WeatherForecast;
 
 public class WeatherForecast
 {
