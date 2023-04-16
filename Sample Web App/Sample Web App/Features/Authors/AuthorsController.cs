@@ -25,4 +25,15 @@ public class AuthorsController : ControllerBase
 
         return Ok(result);
     }
+    
+    // [HttpGet]
+    // public async Task<ActionResult<GetAuthorById.AuthorResult>> GetAuthorByIdAsync(int authorId)
+    // {
+    //     var result = await _mediator.Send(new GetAuthorById.GetAuthorByIdQuery(authorId));
+    //
+    //     if (result == null)
+    //         return NotFound();
+    //
+    //     return Ok(result);
+    // }
 }
