@@ -29,7 +29,7 @@ public class GetAllAuthors
         public async Task<IEnumerable<AuthorResult>> Handle(GetAuthorsQuery request, CancellationToken cancellationToken)
         {
             var authors = await _serviceManager.Author.GetAllAuthorsAsync();
-            var results = _mapper.Map<IEnumerable<AuthorResult>>(authors);
+            var results = _mapper.Map<IEnumerable<AuthorResult>>(authors.AsT0);
             return results;
         }
     }
