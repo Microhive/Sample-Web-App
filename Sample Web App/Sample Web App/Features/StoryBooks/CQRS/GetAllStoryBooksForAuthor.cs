@@ -32,14 +32,12 @@ public class GetAllStoryBooksForAuthor
 
         public async Task<IEnumerable<StoryBookResult>> Handle(GetStoryBooksQuery request, CancellationToken cancellationToken)
         {
-            var Author = await _serviceManager.Author.GetAuthorByIdAsync(request.AuthorId);
+            var results = await _serviceManager.StoryBook.GetAllStoryBooksAsync(request.AuthorId);
 
-            if (Author == null)
+            if (results.IsT1)
                 throw new NoAuthorExistsException(request.AuthorId);
-
-            var StoryBooks = await _serviceManager.StoryBook.GetAllStoryBooksAsync(Author.AuthorId);
-
-            var result = _mapper.Map<IEnumerable<StoryBookResult>>(StoryBooks);
+            
+            var result = _mapper.Map<IEnumerable<StoryBookResult>>(results.AsT0);
 
             return result;
         }

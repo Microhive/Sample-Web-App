@@ -1,5 +1,6 @@
 using AutoMapper;
 using MediatR;
+using Sample_Web_App.Features.StoryBooks.Exceptions;
 using Sample_Web_App.ServiceManager;
 
 namespace Sample_Web_App.Features.Authors.CQRS;
@@ -37,6 +38,10 @@ public class GetAuthorById
         public async Task<AuthorResult> Handle(GetAuthorByIdQuery request, CancellationToken cancellationToken)
         {
             var author = await _serviceManager.Author.GetAuthorByIdAsync(request._authorId);
+            
+            if (author.IsT1)
+                throw new NoAuthorExistsException(request._authorId);
+            
             var results = _mapper.Map<AuthorResult>(author);
             return results;
         }

@@ -36,16 +36,19 @@ public class UpdateStoryBookForAuthor
         {
             var author = await _serviceManager.Author.GetAuthorByIdAsync(request.AuthorId);
 
-            if (author == null)
+            if (author.IsT1)
                 throw new NoAuthorExistsException(request.AuthorId);
 
             var storyBook = await _serviceManager.StoryBook.GetStoryBookAsync(request.AuthorId, request.StoryBookId);
 
-            if (storyBook == null)
+            if (storyBook.IsT1)
+                throw new NoAuthorExistsException(request.AuthorId);
+            
+            if (storyBook.IsT2)
                 throw new NoStoryBookExistsException(request.AuthorId, request.StoryBookId);
 
-            storyBook.Title = request.Title;
-            storyBook.AuthorId = request.AuthorId;
+            storyBook.AsT0.Title = request.Title;
+            storyBook.AsT0.AuthorId = request.AuthorId;
 
             await _serviceManager.SaveAsync();
 

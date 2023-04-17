@@ -23,17 +23,15 @@ public class RemoveStoryBookFromAuthor
 
         public async Task<Unit> Handle(RemoveStoryBookCommand request, CancellationToken cancellationToken)
         {
-            var Author = await _serviceManager.Author.GetAuthorByIdAsync(request.AuthorId);
+            var storyBook = await _serviceManager.StoryBook.GetStoryBookAsync(request.AuthorId, request.StoryBookId);
 
-            if (Author == null)
+            if (storyBook.IsT1)
                 throw new NoAuthorExistsException(request.AuthorId);
-
-            var StoryBook = await _serviceManager.StoryBook.GetStoryBookAsync(request.AuthorId, request.StoryBookId);
-
-            if (StoryBook == null)
+            
+            if (storyBook.IsT2)
                 throw new NoStoryBookExistsException(request.AuthorId, request.StoryBookId);
 
-            _serviceManager.StoryBook.DeleteStoryBook(StoryBook);
+            _serviceManager.StoryBook.DeleteStoryBook(storyBook.AsT0);
 
             await _serviceManager.SaveAsync();
 
