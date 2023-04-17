@@ -39,7 +39,7 @@ public class AddStoryBookToAuthor
         {
             var author = await _serviceManager.Author.GetAuthorByIdAsync(request.AuthorId);
 
-            if (author == null)
+            if (author.IsT1)
                 throw new NoAuthorExistsException(request.AuthorId);
 
             var storyBook = new StoryBook()

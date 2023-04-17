@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using OneOf;
 using Sample_Web_App.Data;
 using Sample_Web_App.Domain;
+using Sample_Web_App.Features.StoryBooks.Exceptions;
 
 namespace Sample_Web_App.Features.StoryBooks;
 
@@ -25,16 +27,31 @@ public class StoryBookService : IStoryBookService
         _context.StoryBooks.Remove(storyBook);
     }
 
-    public async Task<IEnumerable<StoryBook>> GetAllStoryBooksAsync(int authorId)
+    public async Task<OneOf<IEnumerable<StoryBook>, NoAuthorExistsException>> GetAllStoryBooksAsync(int authorId)
     {
         return await _context.StoryBooks
             .Where(x => x.AuthorId == authorId)
             .ToListAsync();
     }
 
-    public async Task<StoryBook> GetStoryBookAsync(int authorId, int storyBookId)
+    public async Task<OneOf<StoryBook, NoAuthorExistsException, NoStoryBookExistsException>> GetStoryBookAsync(int authorId, int storyBookId)
     {
-        return await _context.StoryBooks
+        var authorResult = await _context.Authors
+            .FirstOrDefaultAsync(x => x.AuthorId == authorId);
+        
+        if (authorResult == null)
+        {
+            return new NoAuthorExistsException(authorId);
+        }
+            
+        var storyResult = await _context.StoryBooks
             .FirstOrDefaultAsync(x => x.AuthorId == authorId && x.StoryBookId == storyBookId);
+
+        if (storyResult == null)
+        {
+            return new NoStoryBookExistsException(authorId, storyBookId);
+        }
+
+        return storyResult;
     }
 }
